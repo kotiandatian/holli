@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.framework.loippi.dao.AclDao">
+	
+	<resultMap id="AclResultMap" type="com.framework.loippi.entity.Acl">
+		<id property="id" column="id"  />
+		<result property="createDate" column="create_date" />
+		<result property="url" column="url" />
+		<result property="aclName" column="acl_name" />
+		<result property="aclType" column="acl_type" />
+		<result property="permission" column="permission" />
+		<result property="icon" column="icon" />
+		<result property="parentId" column="parent_id" />
+		<result property="updateDate" column="update_date" />
+		<result property="creator" column="creator" />
+		<result property="updator" column="updator" />
+		<result property="sorts" column="sorts" />
+	</resultMap>
+	
+	<resultMap id="AclChildResultMap" type="com.framework.loippi.entity.Acl">
+		<id property="id" column="id"  />
+		<result property="createDate" column="create_date" />
+		<result property="url" column="url" />
+		<result property="aclName" column="acl_name" />
+		<result property="aclType" column="acl_type" />
+		<result property="permission" column="permission" />
+		<result property="icon" column="icon" />
+		<result property="parentId" column="parent_id" />
+		<result property="updateDate" column="update_date" />
+		<result property="creator" column="creator" />
+		<result property="updator" column="updator" />
+		<result property="sorts" column="sorts" />
+		<collection property="children" column="id" ofType="com.framework.loippi.entity.Acl" javaType="java.util.ArrayList"
+            select="findChildrens"></collection>
+	</resultMap>
+	
+	<!-- 定义可重用的SQL代码段，可以包含在其他语句中 -->
+	<sql id="base_column">
+		 id ,create_date  ,update_date ,creator ,acl_name ,url,acl_type ,permission ,icon  ,updator,parent_id ,sorts 
+	</sql>
+	
+	<sql id="base_value_column">
+		 #{id,jdbcType=BIGINT} ,#{createDate} ,#{updateDate} ,#{creator}  ,#{aclName} ,#{url},#{aclType} ,#{permission} ,#{icon} ,#{updator},#{parentId},#{sorts}
+	</sql>
+	
+	<!-- 定义可重用的WHERE SQL公共代码段，可以包含在其他语句中 -->
+	<sql id="where_column">
+		<if test="id != null ">
+			AND id = #{id,jdbcType=BIGINT}
+		</if>
+
+	    	<!-- 大于等于id -->
+		<if test="filter_ids != null">
+			AND id<![CDATA[>=]]>#{filter_ids}
+		</if>
+		<!-- 小于等于id -->
+	    <if test="filter_ide!= null">
+			AND id<![CDATA[<=]]>#{filter_ide}
+		</if>
+
+
+		<if test="createDate != null ">
+			AND create_date = #{createDate,jdbcType=TIMESTAMP}
+		</if>
+	    	<!-- 大于等于create_date -->
+		<if test="filter_createDates != null">
+			AND date_format(create_date,'%Y%m%d')<![CDATA[>=]]>#{filter_createDates}
+		</if>
+		<!-- 小于等于create_date -->
+	    <if test="filter_createDatee!= null">
+			AND date_format(create_date,'%Y%m%d')<![CDATA[<=]]>#{filter_createDatee}
+		</if>
+
+
+
+		<if test="url != null ">
+			AND url = #{url,jdbcType=VARCHAR}
+		</if>
+	   <if test="urllike != null ">
+			AND url like CONCAT('%',#{urllike},'%')
+		</if>
+
+
+
+		<if test="aclName != null ">
+			AND acl_name = #{aclName,jdbcType=VARCHAR}
+		</if>
+	   <if test="aclNamelike != null ">
+			AND acl_name like CONCAT('%',#{aclNamelike},'%')
+		</if>
+
+
+
+		<if test="aclType != null ">
+			AND acl_type = #{aclType,jdbcType=INTEGER}
+		</if>
+
+	    	<!-- 大于等于acl_type -->
+		<if test="filter_aclTypes != null">
+			AND acl_type<![CDATA[>=]]>#{filter_aclTypes}
+		</if>
+		<!-- 小于等于acl_type -->
+	    <if test="filter_aclTypee!= null">
+			AND acl_type<![CDATA[<=]]>#{filter_aclTypee}
+		</if>
+
+
+		<if test="permission != null ">
+			AND permission = #{permission,jdbcType=VARCHAR}
+		</if>
+	   <if test="permissionlike != null ">
+			AND permission like CONCAT('%',#{permissionlike},'%')
+		</if>
+
+
+
+		<if test="icon != null ">
+			AND icon = #{icon,jdbcType=VARCHAR}
+		</if>
+	   <if test="iconlike != null ">
+			AND icon like CONCAT('%',#{iconlike},'%')
+		</if>
+
+
+
+		<if test="parentId != null ">
+			AND parent_id = #{parentId,jdbcType=BIGINT}
+		</if>
+
+	    	<!-- 大于等于parent_id -->
+		<if test="filter_parentIds != null">
+			AND parent_id<![CDATA[>=]]>#{filter_parentIds}
+		</if>
+		<!-- 小于等于parent_id -->
+	    <if test="filter_parentIde!= null">
+			AND parent_id<![CDATA[<=]]>#{filter_parentIde}
+		</if>
+
+
+		<if test="updateDate != null ">
+			AND update_date = #{updateDate,jdbcType=TIMESTAMP}
+		</if>
+	    	<!-- 大于等于update_date -->
+		<if test="filter_updateDates != null">
+			AND date_format(update_date,'%Y%m%d')<![CDATA[>=]]>#{filter_updateDates}
+		</if>
+		<!-- 小于等于update_date -->
+	    <if test="filter_updateDatee!= null">
+			AND date_format(update_date,'%Y%m%d')<![CDATA[<=]]>#{filter_updateDatee}
+		</if>
+
+
+
+		<if test="creator != null ">
+			AND creator = #{creator,jdbcType=BIGINT}
+		</if>
+
+	    	<!-- 大于等于creator -->
+		<if test="filter_creators != null">
+			AND creator<![CDATA[>=]]>#{filter_creators}
+		</if>
+		<!-- 小于等于creator -->
+	    <if test="filter_creatore!= null">
+			AND creator<![CDATA[<=]]>#{filter_creatore}
+		</if>
+
+
+		<if test="updator != null ">
+			AND updator = #{updator,jdbcType=BIGINT}
+		</if>
+
+	    	<!-- 大于等于updator -->
+		<if test="filter_updators != null">
+			AND updator<![CDATA[>=]]>#{filter_updators}
+		</if>
+		<!-- 小于等于updator -->
+	    <if test="filter_updatore!= null">
+			AND updator<![CDATA[<=]]>#{filter_updatore}
+		</if>
+
+
+		<if test="sorts != null ">
+			AND sorts = #{sorts,jdbcType=INTEGER}
+		</if>
+
+	    	<!-- 大于等于sorts -->
+		<if test="filter_sortss != null">
+			AND sorts<![CDATA[>=]]>#{filter_sortss}
+		</if>
+		<!-- 小于等于sorts -->
+	    <if test="filter_sortse!= null">
+			AND sorts<![CDATA[<=]]>#{filter_sortse}
+		</if>
+
+
+	</sql>
+	
+	<sql id="set_column">
+		<if test="id != null ">
+			id = #{id,jdbcType=BIGINT},
+		</if>
+		<if test="createDate != null ">
+			create_date = #{createDate,jdbcType=TIMESTAMP},
+		</if>
+		<if test="url != null ">
+			url = #{url,jdbcType=VARCHAR},
+		</if>
+		<if test="aclName != null ">
+			acl_name = #{aclName,jdbcType=VARCHAR},
+		</if>
+		<if test="aclType != null ">
+			acl_type = #{aclType,jdbcType=INTEGER},
+		</if>
+		<if test="permission != null ">
+			permission = #{permission,jdbcType=VARCHAR},
+		</if>
+		<if test="icon != null ">
+			icon = #{icon,jdbcType=VARCHAR},
+		</if>
+		<if test="parentId != null ">
+			parent_id = #{parentId,jdbcType=BIGINT},
+		</if>
+		<if test="updateDate != null ">
+			update_date = #{updateDate,jdbcType=TIMESTAMP},
+		</if>
+		<if test="creator != null ">
+			creator = #{creator,jdbcType=BIGINT},
+		</if>
+		<if test="updator != null ">
+			updator = #{updator,jdbcType=BIGINT},
+		</if>
+		<if test="sorts != null ">
+			sorts = #{sorts,jdbcType=INTEGER},
+		</if>
+	</sql>
+
+
+	<select id="findRoots" resultMap="AclResultMap" >
+		SELECT * FROM t_system_acl where ACL_TYPE = 0 AND PARENT_ID IS NULL ORDER BY sorts
+	</select>
+	
+	<select id="findByRoleId" resultMap="AclResultMap" >
+		SELECT * FROM t_system_acl where ID IN (SELECT ACL_ID FROM T_SYSTEM_ROLE_ACLS WHERE ROLE_ID =#{roleId,jdbcType=BIGINT}) ORDER BY sorts
+	</select>
+	
+	
+	<select id="find" resultMap="AclResultMap">
+		SELECT	<include refid="base_column" />
+		FROM	t_system_acl
+		WHERE	ID=#{id,jdbcType=BIGINT}
+	</select>
+	
+	<select id="findAll" resultMap="AclResultMap">
+		SELECT	<include refid="base_column" />
+		FROM	t_system_acl
+	</select>
+	
+	<select id="findChildrens" resultMap="AclChildResultMap">
+		SELECT	<include refid="base_column" />
+		FROM	t_system_acl
+		WHERE	PARENT_ID=#{id,jdbcType=BIGINT} ORDER BY sorts
+	</select>
+	
+	<insert id="insert" parameterType="com.framework.loippi.entity.Acl">
+		<selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">  
+	          SELECT LAST_INSERT_ID() AS ID    
+	    </selectKey>  
+		INSERT t_system_acl 
+				(<include refid="base_column" /> )
+		VALUES	(<include refid="base_value_column" />)
+	</insert>
+	
+	<update id="update" parameterType="com.framework.loippi.entity.Acl">
+		UPDATE	t_system_acl
+		<set>
+			<include refid="set_column" />
+		</set>
+		WHERE	ID = #{id,jdbcType=BIGINT}
+	</update>
+	
+	<delete id="delete">
+		DELETE	FROM t_system_acl
+		WHERE	ID = #{id,jdbcType=BIGINT}
+	</delete>
+	
+	<delete id="deleteAll">
+		DELETE	FROM t_system_acl
+		WHERE	ID	IN
+    	<foreach item="AclId" index="index" collection="ids" open="(" separator="," close=")">
+	  		#{AclId} 
+		</foreach>
+	</delete>
+	
+	<select id="findByParams" resultMap="AclResultMap">
+		SELECT	<include refid="base_column" />
+		FROM 	t_system_acl
+		<where>
+			<include refid="where_column" />
+		</where>
+		
+		   <if test="order != null and order != ''">
+		order by  ${order}
+	     </if>
+	     
+		<if test="pageNumber != null  and pageSize !=null ">
+			limit  #{pageNumber,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+	     </if>
+			
+	</select>
+	
+	<select id="findByPage" resultMap="AclResultMap">
+		SELECT
+		<include refid="base_column" />
+		FROM t_system_acl
+		<where>
+			<include refid="where_column" />
+		</where>
+		
+		ORDER BY sorts
+	</select>
+	
+	
+			<!-- 统计记录数 -->
+	<select id="count" resultType="long">
+		SELECT COUNT(*) FROM t_system_acl
+		<where> 
+			<include refid="where_column" />
+		</where>
+	</select>
+	
+</mapper> 

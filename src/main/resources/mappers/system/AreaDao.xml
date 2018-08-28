@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.framework.loippi.dao.AreaDao">
+	
+	<resultMap id="AreaResultMap" type="com.framework.loippi.entity.Area">
+		<id property="id" column="id"  />
+		<result property="treePath" column="tree_path" />
+		<result property="parentId" column="parent_id" />
+		<result property="createDate" column="create_date" />
+		<result property="name" column="name" />
+		<result property="fullName" column="full_name" />
+	</resultMap>
+	
+	<!-- 定义可重用的SQL代码段，可以包含在其他语句中 -->
+	<sql id="base_column">
+		 id ,tree_path ,parent_id ,create_date ,name ,full_name 
+	</sql>
+	
+	<sql id="base_value_column">
+		 #{id},#{treePath},#{parentId},#{createDate},#{name},#{fullName}
+	</sql>
+	
+	<!-- 定义可重用的WHERE SQL公共代码段，可以包含在其他语句中 -->
+	<sql id="where_column">
+		<if test="id != null ">
+			AND id = #{id,jdbcType=BIGINT}
+		</if>
+
+	    	<!-- 大于等于id -->
+		<if test="filter_ids != null">
+			AND id<![CDATA[>=]]>#{filter_ids}
+		</if>
+		<!-- 小于等于id -->
+	    <if test="filter_ide!= null">
+			AND id<![CDATA[<=]]>#{filter_ide}
+		</if>
+
+
+		<if test="treePath != null ">
+			AND tree_path = #{treePath,jdbcType=VARCHAR}
+		</if>
+	   <if test="treePathlike != null ">
+			AND tree_path like CONCAT('%',#{treePathlike},'%')
+		</if>
+
+
+
+		<if test="parentId != null ">
+			AND parent_id = #{parentId,jdbcType=BIGINT}
+		</if>
+
+	    	<!-- 大于等于parent_id -->
+		<if test="filter_parentIds != null">
+			AND parent_id<![CDATA[>=]]>#{filter_parentIds}
+		</if>
+		<!-- 小于等于parent_id -->
+	    <if test="filter_parentIde!= null">
+			AND parent_id<![CDATA[<=]]>#{filter_parentIde}
+		</if>
+
+
+		<if test="createDate != null ">
+			AND create_date = #{createDate,jdbcType=TIMESTAMP}
+		</if>
+	    	<!-- 大于等于create_date -->
+		<if test="filter_createDates != null">
+			AND date_format(create_date,'%Y%m%d')<![CDATA[>=]]>#{filter_createDates}
+		</if>
+		<!-- 小于等于create_date -->
+	    <if test="filter_createDatee!= null">
+			AND date_format(create_date,'%Y%m%d')<![CDATA[<=]]>#{filter_createDatee}
+		</if>
+
+
+
+		<if test="name != null ">
+			AND name = #{name,jdbcType=VARCHAR}
+		</if>
+	   <if test="namelike != null ">
+			AND name like CONCAT('%',#{namelike},'%')
+		</if>
+
+
+
+		<if test="fullName != null ">
+			AND full_name = #{fullName,jdbcType=VARCHAR}
+		</if>
+	   <if test="fullNamelike != null ">
+			AND full_name like CONCAT('%',#{fullNamelike},'%')
+		</if>
+
+	</sql>
+	
+	<sql id="set_column">
+		<if test="id != null ">
+			id = #{id,jdbcType=BIGINT},
+		</if>
+		<if test="treePath != null ">
+			tree_path = #{treePath,jdbcType=VARCHAR},
+		</if>
+		<if test="parentId != null ">
+			parent_id = #{parentId,jdbcType=BIGINT},
+		</if>
+		<if test="createDate != null ">
+			create_date = #{createDate,jdbcType=TIMESTAMP},
+		</if>
+		<if test="name != null ">
+			name = #{name,jdbcType=VARCHAR},
+		</if>
+		<if test="fullName != null ">
+			full_name = #{fullName,jdbcType=VARCHAR},
+		</if>
+	</sql>
+
+	
+	<select id="find" resultMap="AreaResultMap">
+		SELECT	<include refid="base_column" />
+		FROM	t_system_area
+		WHERE	ID=#{id,jdbcType=BIGINT}
+	</select>
+	
+	<select id="findAll" resultMap="AreaResultMap">
+		SELECT	<include refid="base_column" />
+		FROM	t_system_area
+	</select>
+	
+	
+	<select id="findRoots" resultMap="AreaResultMap">
+		SELECT	<include refid="base_column" />
+		FROM	t_system_area WHERE PARENT_ID IS NULL
+	</select>
+	
+	<select id="findChildrens" resultMap="AreaResultMap">
+		SELECT	<include refid="base_column" />
+		FROM	t_system_area
+		WHERE	PARENT_ID=#{id,jdbcType=BIGINT} 
+	</select>
+	
+	
+	<insert id="insert" parameterType="com.framework.loippi.entity.Area">
+		<selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">  
+	          SELECT LAST_INSERT_ID() AS ID    
+	    </selectKey>  
+		INSERT t_system_area 
+				(<include refid="base_column" /> )
+		VALUES	(<include refid="base_value_column" />)
+	</insert>
+	
+	<update id="update" parameterType="com.framework.loippi.entity.Area">
+		UPDATE	t_system_area
+		<set>
+			<include refid="set_column" />
+		</set>
+		WHERE	ID = #{id,jdbcType=BIGINT}
+	</update>
+	
+	<delete id="delete">
+		DELETE	FROM t_system_area
+		WHERE	ID = #{id,jdbcType=BIGINT}
+	</delete>
+	
+	<delete id="deleteAll">
+		DELETE	FROM t_system_area
+		WHERE	ID	IN
+    	<foreach item="AdId" index="index" collection="ids" open="(" separator="," close=")">
+	  		#{AdId} 
+		</foreach>
+	</delete>
+	
+	<select id="findByParams" resultMap="AreaResultMap">
+		SELECT	<include refid="base_column" />
+		FROM 	t_system_area
+		<where> 1=1
+			<include refid="where_column" />
+			  <if test="order != null and order != ''">
+		order by  ${order}
+	     </if>
+	     
+		<if test="pageNumber != null  and pageSize !=null ">
+			limit  #{pageNumber,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+	     </if>
+		</where>
+	</select>
+	
+	<select id="findByPage" resultMap="AreaResultMap">
+		SELECT
+		<include refid="base_column" />
+		FROM t_system_area
+		<where> 1=1
+			<include refid="where_column" />
+		</where>
+		ORDER BY SORTS
+	</select>
+	
+</mapper> 

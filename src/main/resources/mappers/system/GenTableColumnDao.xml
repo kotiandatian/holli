@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.framework.loippi.dao.GenTableColumnDao">
+
+	<resultMap id="GenTableColumnResultMap" type="com.framework.loippi.entity.GenTableColumn">
+		<id property="id" column="id"  />
+		<result property="createDate" column="create_date" />
+		<result property="creator" column="creator" />
+		<result property="updateDate" column="update_date" />
+		<result property="updator" column="updator" />
+		<result property="genTableId" column="gen_table_id" />
+		<result property="name" column="name" />
+		<result property="comments" column="comments" />
+		<result property="jdbcType" column="jdbc_type" />
+		<result property="mybatisJdbcType" column="mybatis_jdbc_type" />
+		<result property="javaType" column="java_type" />
+		<result property="javaField" column="java_field" />
+		<result property="isPk" column="is_pk" />
+		<result property="isNull" column="is_null" />
+		<result property="isInsert" column="is_insert" />
+		<result property="isEdit" column="is_edit" />
+		<result property="isList" column="is_list" />
+		<result property="isQuery" column="is_query" />
+		<result property="queryType" column="query_type" />
+		<result property="showType" column="show_type" />
+		<result property="sorts" column="sorts" />
+		<result property="remarks" column="remarks" />
+	</resultMap>
+	<!-- 定义可重用的SQL代码段，可以包含在其他语句中 -->
+	<sql id="base_column">
+		 id ,create_date ,creator ,update_date ,updator ,gen_table_id ,name ,comments ,jdbc_type ,mybatis_jdbc_type ,java_type ,java_field ,is_pk ,is_null ,is_insert ,is_edit ,is_list ,is_query ,query_type ,show_type ,sorts ,remarks 
+	</sql>
+
+	<sql id="base_value_column">
+		#{id},#{createDate},#{creator},#{updateDate},#{updator},#{genTableId},#{name},#{comments},#{jdbcType},#{mybatisJdbcType},#{javaType},#{javaField},#{isPk},#{isNull},#{isInsert},#{isEdit},#{isList},#{isQuery},#{queryType},#{showType},#{sorts},#{remarks}
+	</sql>
+
+	<!-- 定义可重用的WHERE SQL公共代码段，可以包含在其他语句中 -->
+	<sql id="where_column">
+		<if test="id != null ">
+			AND id = #{id,jdbcType=BIGINT}
+		</if>
+
+	    	<!-- 大于等于id -->
+		<if test="filter_ids != null">
+			AND id<![CDATA[>=]]>#{filter_ids}
+		</if>
+		<!-- 小于等于id -->
+	    <if test="filter_ide!= null">
+			AND id<![CDATA[<=]]>#{filter_ide}
+		</if>
+
+
+		<if test="createDate != null ">
+			AND create_date = #{createDate,jdbcType=TIMESTAMP}
+		</if>
+	    	<!-- 大于等于create_date -->
+		<if test="filter_createDates != null">
+			AND date_format(create_date,'%Y%m%d')<![CDATA[>=]]>#{filter_createDates}
+		</if>
+		<!-- 小于等于create_date -->
+	    <if test="filter_createDatee!= null">
+			AND date_format(create_date,'%Y%m%d')<![CDATA[<=]]>#{filter_createDatee}
+		</if>
+
+
+
+		<if test="creator != null ">
+			AND creator = #{creator,jdbcType=BIGINT}
+		</if>
+
+	    	<!-- 大于等于creator -->
+		<if test="filter_creators != null">
+			AND creator<![CDATA[>=]]>#{filter_creators}
+		</if>
+		<!-- 小于等于creator -->
+	    <if test="filter_creatore!= null">
+			AND creator<![CDATA[<=]]>#{filter_creatore}
+		</if>
+
+
+		<if test="updateDate != null ">
+			AND update_date = #{updateDate,jdbcType=TIMESTAMP}
+		</if>
+	    	<!-- 大于等于update_date -->
+		<if test="filter_updateDates != null">
+			AND date_format(update_date,'%Y%m%d')<![CDATA[>=]]>#{filter_updateDates}
+		</if>
+		<!-- 小于等于update_date -->
+	    <if test="filter_updateDatee!= null">
+			AND date_format(update_date,'%Y%m%d')<![CDATA[<=]]>#{filter_updateDatee}
+		</if>
+
+
+
+		<if test="updator != null ">
+			AND updator = #{updator,jdbcType=BIGINT}
+		</if>
+
+	    	<!-- 大于等于updator -->
+		<if test="filter_updators != null">
+			AND updator<![CDATA[>=]]>#{filter_updators}
+		</if>
+		<!-- 小于等于updator -->
+	    <if test="filter_updatore!= null">
+			AND updator<![CDATA[<=]]>#{filter_updatore}
+		</if>
+
+
+		<if test="genTableId != null ">
+			AND gen_table_id = #{genTableId,jdbcType=BIGINT}
+		</if>
+
+	    	<!-- 大于等于gen_table_id -->
+		<if test="filter_genTableIds != null">
+			AND gen_table_id<![CDATA[>=]]>#{filter_genTableIds}
+		</if>
+		<!-- 小于等于gen_table_id -->
+	    <if test="filter_genTableIde!= null">
+			AND gen_table_id<![CDATA[<=]]>#{filter_genTableIde}
+		</if>
+
+
+		<if test="name != null ">
+			AND name = #{name,jdbcType=VARCHAR}
+		</if>
+	   <if test="namelike != null ">
+			AND name like CONCAT('%',#{namelike},'%')
+		</if>
+
+
+
+		<if test="comments != null ">
+			AND comments = #{comments,jdbcType=VARCHAR}
+		</if>
+	   <if test="commentslike != null ">
+			AND comments like CONCAT('%',#{commentslike},'%')
+		</if>
+
+
+
+		<if test="jdbcType != null ">
+			AND jdbc_type = #{jdbcType,jdbcType=VARCHAR}
+		</if>
+	   <if test="jdbcTypelike != null ">
+			AND jdbc_type like CONCAT('%',#{jdbcTypelike},'%')
+		</if>
+
+
+
+		<if test="mybatisJdbcType != null ">
+			AND mybatis_jdbc_type = #{mybatisJdbcType,jdbcType=VARCHAR}
+		</if>
+	   <if test="mybatisJdbcTypelike != null ">
+			AND mybatis_jdbc_type like CONCAT('%',#{mybatisJdbcTypelike},'%')
+		</if>
+
+
+
+		<if test="javaType != null ">
+			AND java_type = #{javaType,jdbcType=VARCHAR}
+		</if>
+	   <if test="javaTypelike != null ">
+			AND java_type like CONCAT('%',#{javaTypelike},'%')
+		</if>
+
+
+
+		<if test="javaField != null ">
+			AND java_field = #{javaField,jdbcType=VARCHAR}
+		</if>
+	   <if test="javaFieldlike != null ">
+			AND java_field like CONCAT('%',#{javaFieldlike},'%')
+		</if>
+
+
+
+		<if test="isPk != null ">
+			AND is_pk = #{isPk,jdbcType=INTEGER}
+		</if>
+
+	    	<!-- 大于等于is_pk -->
+		<if test="filter_isPks != null">
+			AND is_pk<![CDATA[>=]]>#{filter_isPks}
+		</if>
+		<!-- 小于等于is_pk -->
+	    <if test="filter_isPke!= null">
+			AND is_pk<![CDATA[<=]]>#{filter_isPke}
+		</if>
+
+
+		<if test="isNull != null ">
+			AND is_null = #{isNull,jdbcType=INTEGER}
+		</if>
+
+	    	<!-- 大于等于is_null -->
+		<if test="filter_isNulls != null">
+			AND is_null<![CDATA[>=]]>#{filter_isNulls}
+		</if>
+		<!-- 小于等于is_null -->
+	    <if test="filter_isNulle!= null">
+			AND is_null<![CDATA[<=]]>#{filter_isNulle}
+		</if>
+
+
+		<if test="isInsert != null ">
+			AND is_insert = #{isInsert,jdbcType=INTEGER}
+		</if>
+
+	    	<!-- 大于等于is_insert -->
+		<if test="filter_isInserts != null">
+			AND is_insert<![CDATA[>=]]>#{filter_isInserts}
+		</if>
+		<!-- 小于等于is_insert -->
+	    <if test="filter_isInserte!= null">
+			AND is_insert<![CDATA[<=]]>#{filter_isInserte}
+		</if>
+
+
+		<if test="isEdit != null ">
+			AND is_edit = #{isEdit,jdbcType=INTEGER}
+		</if>
+
+	    	<!-- 大于等于is_edit -->
+		<if test="filter_isEdits != null">
+			AND is_edit<![CDATA[>=]]>#{filter_isEdits}
+		</if>
+		<!-- 小于等于is_edit -->
+	    <if test="filter_isEdite!= null">
+			AND is_edit<![CDATA[<=]]>#{filter_isEdite}
+		</if>
+
+
+		<if test="isList != null ">
+			AND is_list = #{isList,jdbcType=INTEGER}
+		</if>
+
+	    	<!-- 大于等于is_list -->
+		<if test="filter_isLists != null">
+			AND is_list<![CDATA[>=]]>#{filter_isLists}
+		</if>
+		<!-- 小于等于is_list -->
+	    <if test="filter_isListe!= null">
+			AND is_list<![CDATA[<=]]>#{filter_isListe}
+		</if>
+
+
+		<if test="isQuery != null ">
+			AND is_query = #{isQuery,jdbcType=INTEGER}
+		</if>
+
+	    	<!-- 大于等于is_query -->
+		<if test="filter_isQuerys != null">
+			AND is_query<![CDATA[>=]]>#{filter_isQuerys}
+		</if>
+		<!-- 小于等于is_query -->
+	    <if test="filter_isQuerye!= null">
+			AND is_query<![CDATA[<=]]>#{filter_isQuerye}
+		</if>
+
+
+		<if test="queryType != null ">
+			AND query_type = #{queryType,jdbcType=VARCHAR}
+		</if>
+	   <if test="queryTypelike != null ">
+			AND query_type like CONCAT('%',#{queryTypelike},'%')
+		</if>
+
+
+
+		<if test="showType != null ">
+			AND show_type = #{showType,jdbcType=VARCHAR}
+		</if>
+	   <if test="showTypelike != null ">
+			AND show_type like CONCAT('%',#{showTypelike},'%')
+		</if>
+
+
+
+		<if test="sorts != null ">
+			AND sorts = #{sorts,jdbcType=INTEGER}
+		</if>
+
+	    	<!-- 大于等于sorts -->
+		<if test="filter_sortss != null">
+			AND sorts<![CDATA[>=]]>#{filter_sortss}
+		</if>
+		<!-- 小于等于sorts -->
+	    <if test="filter_sortse!= null">
+			AND sorts<![CDATA[<=]]>#{filter_sortse}
+		</if>
+
+
+		<if test="remarks != null ">
+			AND remarks = #{remarks,jdbcType=VARCHAR}
+		</if>
+	   <if test="remarkslike != null ">
+			AND remarks like CONCAT('%',#{remarkslike},'%')
+		</if>
+
+	</sql>
+
+	<sql id="set_column">
+			<if test="id != null ">
+			id = #{id,jdbcType=BIGINT},
+		</if>
+		<if test="createDate != null ">
+			create_date = #{createDate,jdbcType=TIMESTAMP},
+		</if>
+		<if test="creator != null ">
+			creator = #{creator,jdbcType=BIGINT},
+		</if>
+		<if test="updateDate != null ">
+			update_date = #{updateDate,jdbcType=TIMESTAMP},
+		</if>
+		<if test="updator != null ">
+			updator = #{updator,jdbcType=BIGINT},
+		</if>
+		<if test="genTableId != null ">
+			gen_table_id = #{genTableId,jdbcType=BIGINT},
+		</if>
+		<if test="name != null ">
+			name = #{name,jdbcType=VARCHAR},
+		</if>
+		<if test="comments != null ">
+			comments = #{comments,jdbcType=VARCHAR},
+		</if>
+		<if test="jdbcType != null ">
+			jdbc_type = #{jdbcType,jdbcType=VARCHAR},
+		</if>
+		<if test="mybatisJdbcType != null ">
+			mybatis_jdbc_type = #{mybatisJdbcType,jdbcType=VARCHAR},
+		</if>
+		<if test="javaType != null ">
+			java_type = #{javaType,jdbcType=VARCHAR},
+		</if>
+		<if test="javaField != null ">
+			java_field = #{javaField,jdbcType=VARCHAR},
+		</if>
+		<if test="isPk != null ">
+			is_pk = #{isPk,jdbcType=INTEGER},
+		</if>
+		<if test="isNull != null ">
+			is_null = #{isNull,jdbcType=INTEGER},
+		</if>
+		<if test="isInsert != null ">
+			is_insert = #{isInsert,jdbcType=INTEGER},
+		</if>
+		<if test="isEdit != null ">
+			is_edit = #{isEdit,jdbcType=INTEGER},
+		</if>
+		<if test="isList != null ">
+			is_list = #{isList,jdbcType=INTEGER},
+		</if>
+		<if test="isQuery != null ">
+			is_query = #{isQuery,jdbcType=INTEGER},
+		</if>
+		<if test="queryType != null ">
+			query_type = #{queryType,jdbcType=VARCHAR},
+		</if>
+		<if test="showType != null ">
+			show_type = #{showType,jdbcType=VARCHAR},
+		</if>
+		<if test="sorts != null ">
+			sorts = #{sorts,jdbcType=INTEGER},
+		</if>
+		<if test="remarks != null ">
+			remarks = #{remarks,jdbcType=VARCHAR},
+		</if>
+	</sql>
+
+
+	<select id="find" resultMap="GenTableColumnResultMap">
+		SELECT
+		<include refid="base_column" />
+		FROM t_gen_table_column
+		WHERE ID=#{id,jdbcType=BIGINT}
+	</select>
+	
+	
+	<select id="findByTableId" resultMap="GenTableColumnResultMap">
+		SELECT
+		<include refid="base_column" />
+		FROM t_gen_table_column
+		WHERE GEN_TABLE_ID=#{tableId,jdbcType=BIGINT}
+	</select>
+	
+
+	<select id="findAll" resultMap="GenTableColumnResultMap">
+		SELECT
+		<include refid="base_column" />
+		FROM t_gen_table_column
+	</select>
+
+	<insert id="insert" parameterType="com.framework.loippi.entity.GenTableColumn">
+		<selectKey resultType="java.lang.Long" order="AFTER"
+			keyProperty="id">
+			SELECT LAST_INSERT_ID() AS ID
+		</selectKey>
+		INSERT t_gen_table_column
+			(<include refid="base_column" />)
+		VALUES 
+			(<include refid="base_value_column" />)
+	</insert>
+
+	<update id="update" parameterType="com.framework.loippi.entity.GenTableColumn">
+		UPDATE t_gen_table_column
+		<set>
+			<include refid="set_column" />
+		</set>
+		WHERE ID = #{id,jdbcType=BIGINT}
+	</update>
+
+	<delete id="delete">
+		DELETE FROM t_gen_table_column
+		WHERE ID =
+		#{id,jdbcType=BIGINT}
+	</delete>
+
+	<delete id="deleteByTableId">
+		DELETE FROM t_gen_table_column
+		WHERE GEN_TABLE_ID =
+		#{tableId,jdbcType=BIGINT}
+	</delete>
+	
+	<delete id="deleteAll">
+		DELETE FROM t_gen_table_column
+		WHERE ID IN
+		<foreach item="ItemId" index="index" collection="ids" open="("
+			separator="," close=")">
+			#{ItemId}
+		</foreach>
+	</delete>
+
+	<select id="findByParams" resultMap="GenTableColumnResultMap">
+		SELECT
+		<include refid="base_column" />
+		FROM t_gen_table_column
+		<where>
+			<include refid="where_column" />
+		</where>
+		
+		   <if test="order != null and order != ''">
+		order by  ${order}
+	     </if>
+	     
+		<if test="pageNumber != null  and pageSize !=null ">
+			limit  #{pageNumber,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+	     </if>
+		
+	</select>
+
+	<select id="findByPage" resultMap="GenTableColumnResultMap">
+		SELECT
+		<include refid="base_column" />
+		FROM t_gen_table_column
+		<where>
+			<include refid="where_column" />
+		</where>
+		ORDER BY SORTS
+	</select>
+<!-- 统计记录数 -->
+	<select id="count" resultType="long">
+		SELECT COUNT(*) FROM t_gen_table_column
+		<where> 
+			<include refid="where_column" />
+		</where>
+	</select>
+</mapper> 

@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.framework.loippi.dao.LogDao">
+	
+	<resultMap id="LogResultMap" type="com.framework.loippi.entity.Log">
+		<id property="id" column="id"  />
+		<result property="createDate" column="create_date" />
+		<result property="operations" column="operations" />
+		<result property="operator" column="operator" />
+		<result property="content" column="content" />
+		<result property="parameter" column="parameter" />
+		<result property="ip" column="ip" />
+	</resultMap>
+	
+	<!-- 定义可重用的SQL代码段，可以包含在其他语句中 -->
+	<sql id="base_column">
+		 id ,create_date ,operations ,operator ,content ,parameter ,ip 
+	</sql>
+	
+	<sql id="base_value_column">
+		 #{id},#{createDate},#{operations},#{operator},#{content},#{parameter},#{ip}
+	</sql>
+	
+	<!-- 定义可重用的WHERE SQL公共代码段，可以包含在其他语句中 -->
+	<sql id="where_column">
+		<if test="id != null ">
+			AND id = #{id,jdbcType=BIGINT}
+		</if>
+
+	    	<!-- 大于等于id -->
+		<if test="filter_ids != null">
+			AND id<![CDATA[>=]]>#{filter_ids}
+		</if>
+		<!-- 小于等于id -->
+	    <if test="filter_ide!= null">
+			AND id<![CDATA[<=]]>#{filter_ide}
+		</if>
+
+
+		<if test="createDate != null ">
+			AND create_date = #{createDate,jdbcType=TIMESTAMP}
+		</if>
+	    	<!-- 大于等于create_date -->
+		<if test="filter_createDates != null">
+			AND date_format(create_date,'%Y%m%d')<![CDATA[>=]]>#{filter_createDates}
+		</if>
+		<!-- 小于等于create_date -->
+	    <if test="filter_createDatee!= null">
+			AND date_format(create_date,'%Y%m%d')<![CDATA[<=]]>#{filter_createDatee}
+		</if>
+
+
+
+		<if test="operations != null ">
+			AND operations = #{operations,jdbcType=VARCHAR}
+		</if>
+	   <if test="operationslike != null ">
+			AND operations like CONCAT('%',#{operationslike},'%')
+		</if>
+
+
+
+		<if test="operator != null ">
+			AND operator = #{operator,jdbcType=VARCHAR}
+		</if>
+	   <if test="operatorlike != null ">
+			AND operator like CONCAT('%',#{operatorlike},'%')
+		</if>
+
+
+
+		<if test="content != null ">
+			AND content = #{content,jdbcType=VARCHAR}
+		</if>
+	   <if test="contentlike != null ">
+			AND content like CONCAT('%',#{contentlike},'%')
+		</if>
+
+
+
+		<if test="parameter != null ">
+			AND parameter = #{parameter,jdbcType=VARCHAR}
+		</if>
+	   <if test="parameterlike != null ">
+			AND parameter like CONCAT('%',#{parameterlike},'%')
+		</if>
+
+
+
+		<if test="ip != null ">
+			AND ip = #{ip,jdbcType=VARCHAR}
+		</if>
+	   <if test="iplike != null ">
+			AND ip like CONCAT('%',#{iplike},'%')
+		</if>
+
+
+	</sql>
+	
+	<sql id="set_column">
+		<if test="id != null ">
+			id = #{id,jdbcType=BIGINT},
+		</if>
+		<if test="createDate != null ">
+			create_date = #{createDate,jdbcType=TIMESTAMP},
+		</if>
+		<if test="operations != null ">
+			operations = #{operations,jdbcType=VARCHAR},
+		</if>
+		<if test="operator != null ">
+			operator = #{operator,jdbcType=VARCHAR},
+		</if>
+		<if test="content != null ">
+			content = #{content,jdbcType=VARCHAR},
+		</if>
+		<if test="parameter != null ">
+			parameter = #{parameter,jdbcType=VARCHAR},
+		</if>
+		<if test="ip != null ">
+			ip = #{ip,jdbcType=VARCHAR},
+		</if>
+	</sql>
+
+
+	
+	<select id="find" resultMap="LogResultMap">
+		SELECT	<include refid="base_column" />
+		FROM	t_system_log
+		WHERE	ID=#{id,jdbcType=BIGINT}
+	</select>
+	
+	<select id="findAll" resultMap="LogResultMap">
+		SELECT	<include refid="base_column" />
+		FROM	t_system_log
+	</select>
+	
+	<insert id="insert" parameterType="com.framework.loippi.entity.Log">
+		<selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">  
+	          SELECT LAST_INSERT_ID() AS ID    
+	    </selectKey>  
+		INSERT t_system_log 
+				(<include refid="base_column" /> )
+		VALUES	(<include refid="base_value_column" />)
+	</insert>
+	
+	<update id="update" parameterType="com.framework.loippi.entity.Log">
+		UPDATE	t_system_log
+		<set>
+			<include refid="set_column" />
+		</set>
+		WHERE	ID = #{id,jdbcType=BIGINT}
+	</update>
+	
+	<delete id="delete">
+		DELETE	FROM t_system_log
+		WHERE	ID = #{id,jdbcType=BIGINT}
+	</delete>
+	
+	<delete id="deleteAll">
+		DELETE	FROM t_system_log
+		WHERE	ID	IN
+    	<foreach item="LogId" index="index" collection="ids" open="(" separator="," close=")">
+	  		#{LogId} 
+		</foreach>
+	</delete>
+	<delete id="clear">
+		DELETE	FROM t_system_log
+	</delete>
+	<select id="findByParams" resultMap="LogResultMap">
+		SELECT	<include refid="base_column" />
+		FROM 	t_system_log
+		<where>
+			<include refid="where_column" />		</where>
+			  <if test="order != null and order != ''">
+		order by  ${order}
+	     </if>
+	     
+		<if test="pageNumber != null  and pageSize !=null ">
+			limit  #{pageNumber,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+	     </if>
+		
+	</select>
+	
+	<select id="findByPage" resultMap="LogResultMap">
+		SELECT
+		<include refid="base_column" />
+		FROM t_system_log
+		<where>
+			<include refid="where_column" />
+		</where>
+	</select>
+	
+				<!-- 统计记录数 -->
+	<select id="count" resultType="long">
+		SELECT COUNT(*) FROM t_system_log
+		<where> 
+			<include refid="where_column" />
+		</where>
+	</select>
+	
+</mapper> 

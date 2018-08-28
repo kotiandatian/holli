@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.framework.loippi.dao.GenTableDao">
+
+	<resultMap id="GenTableResultMap" type="com.framework.loippi.entity.GenTable">
+		<id property="id" column="id"  />
+		<result property="createDate" column="create_date" />
+		<result property="creator" column="creator" />
+		<result property="updateDate" column="update_date" />
+		<result property="updator" column="updator" />
+		<result property="tableName" column="table_name" />
+		<result property="description" column="description" />
+		<result property="className" column="class_name" />
+		<result property="parentTable" column="parent_table" />
+		<result property="parentTableFk" column="parent_table_fk" />
+		<result property="remarks" column="remarks" />
+		<collection property="columns" column="ID" select="com.framework.loippi.dao.GenTableColumnDao.findByTableId" ></collection>
+	</resultMap>
+	<!-- 定义可重用的SQL代码段，可以包含在其他语句中 -->
+	<sql id="base_column">
+		 id ,create_date ,creator ,update_date ,updator ,table_name ,description ,class_name ,parent_table ,parent_table_fk ,remarks 
+	</sql>
+
+	<sql id="base_value_column">
+		 #{id},#{createDate},#{creator},#{updateDate},#{updator},#{tableName},#{description},#{className},#{parentTable},#{parentTableFk},#{remarks}
+	</sql>
+
+	<!-- 定义可重用的WHERE SQL公共代码段，可以包含在其他语句中 -->
+	<sql id="where_column">
+		<if test="id != null ">
+			AND id = #{id,jdbcType=BIGINT}
+		</if>
+
+	    	<!-- 大于等于id -->
+		<if test="filter_ids != null">
+			AND id<![CDATA[>=]]>#{filter_ids}
+		</if>
+		<!-- 小于等于id -->
+	    <if test="filter_ide!= null">
+			AND id<![CDATA[<=]]>#{filter_ide}
+		</if>
+
+
+		<if test="createDate != null ">
+			AND create_date = #{createDate,jdbcType=TIMESTAMP}
+		</if>
+	    	<!-- 大于等于create_date -->
+		<if test="filter_createDates != null">
+			AND date_format(create_date,'%Y%m%d')<![CDATA[>=]]>#{filter_createDates}
+		</if>
+		<!-- 小于等于create_date -->
+	    <if test="filter_createDatee!= null">
+			AND date_format(create_date,'%Y%m%d')<![CDATA[<=]]>#{filter_createDatee}
+		</if>
+
+
+
+		<if test="creator != null ">
+			AND creator = #{creator,jdbcType=BIGINT}
+		</if>
+
+	    	<!-- 大于等于creator -->
+		<if test="filter_creators != null">
+			AND creator<![CDATA[>=]]>#{filter_creators}
+		</if>
+		<!-- 小于等于creator -->
+	    <if test="filter_creatore!= null">
+			AND creator<![CDATA[<=]]>#{filter_creatore}
+		</if>
+
+
+		<if test="updateDate != null ">
+			AND update_date = #{updateDate,jdbcType=TIMESTAMP}
+		</if>
+	    	<!-- 大于等于update_date -->
+		<if test="filter_updateDates != null">
+			AND date_format(update_date,'%Y%m%d')<![CDATA[>=]]>#{filter_updateDates}
+		</if>
+		<!-- 小于等于update_date -->
+	    <if test="filter_updateDatee!= null">
+			AND date_format(update_date,'%Y%m%d')<![CDATA[<=]]>#{filter_updateDatee}
+		</if>
+
+
+
+		<if test="updator != null ">
+			AND updator = #{updator,jdbcType=BIGINT}
+		</if>
+
+	    	<!-- 大于等于updator -->
+		<if test="filter_updators != null">
+			AND updator<![CDATA[>=]]>#{filter_updators}
+		</if>
+		<!-- 小于等于updator -->
+	    <if test="filter_updatore!= null">
+			AND updator<![CDATA[<=]]>#{filter_updatore}
+		</if>
+
+
+		<if test="tableName != null ">
+			AND table_name = #{tableName,jdbcType=VARCHAR}
+		</if>
+	   <if test="tableNamelike != null ">
+			AND table_name like CONCAT('%',#{tableNamelike},'%')
+		</if>
+
+
+
+		<if test="description != null ">
+			AND description = #{description,jdbcType=VARCHAR}
+		</if>
+	   <if test="descriptionlike != null ">
+			AND description like CONCAT('%',#{descriptionlike},'%')
+		</if>
+
+
+
+		<if test="className != null ">
+			AND class_name = #{className,jdbcType=VARCHAR}
+		</if>
+	   <if test="classNamelike != null ">
+			AND class_name like CONCAT('%',#{classNamelike},'%')
+		</if>
+
+
+
+		<if test="parentTable != null ">
+			AND parent_table = #{parentTable,jdbcType=VARCHAR}
+		</if>
+	   <if test="parentTablelike != null ">
+			AND parent_table like CONCAT('%',#{parentTablelike},'%')
+		</if>
+
+
+
+		<if test="parentTableFk != null ">
+			AND parent_table_fk = #{parentTableFk,jdbcType=VARCHAR}
+		</if>
+	   <if test="parentTableFklike != null ">
+			AND parent_table_fk like CONCAT('%',#{parentTableFklike},'%')
+		</if>
+
+
+
+		<if test="remarks != null ">
+			AND remarks = #{remarks,jdbcType=VARCHAR}
+		</if>
+	   <if test="remarkslike != null ">
+			AND remarks like CONCAT('%',#{remarkslike},'%')
+		</if>
+
+
+	</sql>
+
+	<sql id="set_column">
+		<if test="id != null ">
+			id = #{id,jdbcType=BIGINT},
+		</if>
+		<if test="createDate != null ">
+			create_date = #{createDate,jdbcType=TIMESTAMP},
+		</if>
+		<if test="creator != null ">
+			creator = #{creator,jdbcType=BIGINT},
+		</if>
+		<if test="updateDate != null ">
+			update_date = #{updateDate,jdbcType=TIMESTAMP},
+		</if>
+		<if test="updator != null ">
+			updator = #{updator,jdbcType=BIGINT},
+		</if>
+		<if test="tableName != null ">
+			table_name = #{tableName,jdbcType=VARCHAR},
+		</if>
+		<if test="description != null ">
+			description = #{description,jdbcType=VARCHAR},
+		</if>
+		<if test="className != null ">
+			class_name = #{className,jdbcType=VARCHAR},
+		</if>
+		<if test="parentTable != null ">
+			parent_table = #{parentTable,jdbcType=VARCHAR},
+		</if>
+		<if test="parentTableFk != null ">
+			parent_table_fk = #{parentTableFk,jdbcType=VARCHAR},
+		</if>
+		<if test="remarks != null ">
+			remarks = #{remarks,jdbcType=VARCHAR},
+		</if>
+	</sql>
+
+
+	<select id="find" resultMap="GenTableResultMap">
+		SELECT
+		<include refid="base_column" />
+		FROM t_gen_table
+		WHERE ID=#{id,jdbcType=BIGINT}
+	</select>
+
+	<select id="findAll" resultMap="GenTableResultMap">
+		SELECT
+		<include refid="base_column" />
+		FROM t_gen_table
+	</select>
+
+	<insert id="insert" parameterType="com.framework.loippi.entity.GenTable">
+		<selectKey resultType="java.lang.Long" order="AFTER"
+			keyProperty="id">
+			SELECT LAST_INSERT_ID() AS ID
+		</selectKey>
+		INSERT t_gen_table
+		(
+		<include refid="base_column" />
+		)
+		VALUES (
+		<include refid="base_value_column" />
+		)
+	</insert>
+
+	<update id="update" parameterType="com.framework.loippi.entity.GenTable">
+		UPDATE t_gen_table
+		<set>
+			<include refid="set_column" />
+		</set>
+		WHERE ID = #{id,jdbcType=BIGINT}
+	</update>
+
+	<delete id="delete">
+		DELETE FROM t_gen_table
+		WHERE ID =
+		#{id,jdbcType=BIGINT}
+	</delete>
+
+	<delete id="deleteAll">
+		DELETE FROM t_gen_table
+		WHERE ID IN
+		<foreach item="ItemId" index="index" collection="ids" open="("
+			separator="," close=")">
+			#{ItemId}
+		</foreach>
+	</delete>
+
+	<select id="findByParams" resultMap="GenTableResultMap">
+		SELECT
+		<include refid="base_column" />
+		FROM t_gen_table
+		<where>
+			<include refid="where_column" />
+		</where>
+		
+		   <if test="order != null and order != ''">
+		order by  ${order}
+	     </if>
+	     
+		<if test="pageNumber != null  and pageSize !=null ">
+			limit  #{pageNumber,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+	     </if>
+		
+	</select>
+
+	<select id="findByPage" resultMap="GenTableResultMap">
+		SELECT
+		<include refid="base_column" />
+		FROM t_gen_table
+		<where>
+			<include refid="where_column" />
+		</where>
+	</select>
+
+			<!-- 统计记录数 -->
+	<select id="count" resultType="long">
+		SELECT COUNT(*) FROM t_gen_table
+		<where> 
+			<include refid="where_column" />
+		</where>
+	</select>
+</mapper> 

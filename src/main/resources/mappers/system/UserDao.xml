@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.framework.loippi.dao.UserDao">
+	
+	<resultMap id="UserResultMap" type="com.framework.loippi.entity.User">
+		<id property="id" column="id"  />
+		<result property="createDate" column="create_date" />
+		<result property="userName" column="user_name" />
+		<result property="password" column="password" />
+		<result property="nickname" column="nickname" />
+		<result property="isEnabled" column="is_enabled" />
+		<result property="isLocked" column="is_locked" />
+		<result property="loginFailureCount" column="login_failure_count" />
+		<result property="lockedDate" column="locked_date" />
+		<result property="loginDate" column="login_date" />
+		<result property="loginIp" column="login_ip" />
+		<result property="email" column="email" />
+		<result property="roleId" column="role_id" />
+		<result property="avatar" column="avatar" />
+		<result property="updateDate" column="update_date" />
+		<result property="theme" column="theme" />
+		<association property="role" column="ROLE_ID" select="com.framework.loippi.dao.RoleDao.find"/>
+	</resultMap>
+	
+
+	<resultMap id="UserAndRoleResultMap" extends="UserResultMap"  type="com.framework.loippi.entity.User">
+	 	<association property="role" javaType="com.framework.loippi.entity.Role">
+            <id property="id" column="ID" />
+			<result property="createDate" column="create_date" />
+			<result property="updateDate" column="update_date" />
+			<result property="creator" column="creator" />
+			<result property="updator" column="updator" />
+			<result property="name" column="role_name" />
+			<result property="isSystem" column="is_system" />
+			<result property="description" column="description" />
+         </association>
+	</resultMap>
+
+		<!-- 定义可重用的SQL代码段，可以包含在其他语句中 -->
+	<sql id="base_column">
+		 id ,create_date ,user_name ,password ,nickname ,is_enabled ,is_locked ,login_failure_count ,locked_date ,login_date ,login_ip ,email ,role_id ,avatar ,update_date ,theme 
+	</sql>
+	
+	<sql id="base_value_column">
+		 #{id},#{createDate},#{userName},#{password},#{nickname},#{isEnabled},#{isLocked},#{loginFailureCount},#{lockedDate},#{loginDate},#{loginIp},#{email},#{roleId},#{avatar},#{updateDate},#{theme}
+	</sql>
+	
+	<!-- 定义可重用的WHERE SQL公共代码段，可以包含在其他语句中 -->
+	<sql id="where_column">
+		<if test="id != null ">
+			AND id = #{id,jdbcType=BIGINT}
+		</if>
+
+	    	<!-- 大于等于id -->
+		<if test="filter_ids != null">
+			AND id<![CDATA[>=]]>#{filter_ids}
+		</if>
+		<!-- 小于等于id -->
+	    <if test="filter_ide!= null">
+			AND id<![CDATA[<=]]>#{filter_ide}
+		</if>
+
+
+		<if test="createDate != null ">
+			AND create_date = #{createDate,jdbcType=TIMESTAMP}
+		</if>
+	    	<!-- 大于等于create_date -->
+		<if test="filter_createDates != null">
+			AND date_format(create_date,'%Y%m%d')<![CDATA[>=]]>#{filter_createDates}
+		</if>
+		<!-- 小于等于create_date -->
+	    <if test="filter_createDatee!= null">
+			AND date_format(create_date,'%Y%m%d')<![CDATA[<=]]>#{filter_createDatee}
+		</if>
+
+
+
+		<if test="userName != null ">
+			AND user_name = #{userName,jdbcType=VARCHAR}
+		</if>
+	   <if test="userNamelike != null ">
+			AND user_name like CONCAT('%',#{userNamelike},'%')
+		</if>
+
+
+
+		<if test="password != null ">
+			AND password = #{password,jdbcType=VARCHAR}
+		</if>
+	   <if test="passwordlike != null ">
+			AND password like CONCAT('%',#{passwordlike},'%')
+		</if>
+
+
+
+		<if test="nickname != null ">
+			AND nickname = #{nickname,jdbcType=VARCHAR}
+		</if>
+	   <if test="nicknamelike != null ">
+			AND nickname like CONCAT('%',#{nicknamelike},'%')
+		</if>
+
+
+
+		<if test="isEnabled != null ">
+			AND is_enabled = #{isEnabled,jdbcType=INTEGER}
+		</if>
+
+	    	<!-- 大于等于is_enabled -->
+		<if test="filter_isEnableds != null">
+			AND is_enabled<![CDATA[>=]]>#{filter_isEnableds}
+		</if>
+		<!-- 小于等于is_enabled -->
+	    <if test="filter_isEnablede!= null">
+			AND is_enabled<![CDATA[<=]]>#{filter_isEnablede}
+		</if>
+
+
+		<if test="isLocked != null ">
+			AND is_locked = #{isLocked,jdbcType=INTEGER}
+		</if>
+
+	    	<!-- 大于等于is_locked -->
+		<if test="filter_isLockeds != null">
+			AND is_locked<![CDATA[>=]]>#{filter_isLockeds}
+		</if>
+		<!-- 小于等于is_locked -->
+	    <if test="filter_isLockede!= null">
+			AND is_locked<![CDATA[<=]]>#{filter_isLockede}
+		</if>
+
+
+		<if test="loginFailureCount != null ">
+			AND login_failure_count = #{loginFailureCount,jdbcType=INTEGER}
+		</if>
+
+	    	<!-- 大于等于login_failure_count -->
+		<if test="filter_loginFailureCounts != null">
+			AND login_failure_count<![CDATA[>=]]>#{filter_loginFailureCounts}
+		</if>
+		<!-- 小于等于login_failure_count -->
+	    <if test="filter_loginFailureCounte!= null">
+			AND login_failure_count<![CDATA[<=]]>#{filter_loginFailureCounte}
+		</if>
+
+
+		<if test="lockedDate != null ">
+			AND locked_date = #{lockedDate,jdbcType=TIMESTAMP}
+		</if>
+	    	<!-- 大于等于locked_date -->
+		<if test="filter_lockedDates != null">
+			AND date_format(locked_date,'%Y%m%d')<![CDATA[>=]]>#{filter_lockedDates}
+		</if>
+		<!-- 小于等于locked_date -->
+	    <if test="filter_lockedDatee!= null">
+			AND date_format(locked_date,'%Y%m%d')<![CDATA[<=]]>#{filter_lockedDatee}
+		</if>
+
+
+
+		<if test="loginDate != null ">
+			AND login_date = #{loginDate,jdbcType=TIMESTAMP}
+		</if>
+	    	<!-- 大于等于login_date -->
+		<if test="filter_loginDates != null">
+			AND date_format(login_date,'%Y%m%d')<![CDATA[>=]]>#{filter_loginDates}
+		</if>
+		<!-- 小于等于login_date -->
+	    <if test="filter_loginDatee!= null">
+			AND date_format(login_date,'%Y%m%d')<![CDATA[<=]]>#{filter_loginDatee}
+		</if>
+
+
+
+		<if test="loginIp != null ">
+			AND login_ip = #{loginIp,jdbcType=VARCHAR}
+		</if>
+	   <if test="loginIplike != null ">
+			AND login_ip like CONCAT('%',#{loginIplike},'%')
+		</if>
+
+
+
+		<if test="email != null ">
+			AND email = #{email,jdbcType=VARCHAR}
+		</if>
+	   <if test="emaillike != null ">
+			AND email like CONCAT('%',#{emaillike},'%')
+		</if>
+
+
+
+		<if test="roleId != null ">
+			AND role_id = #{roleId,jdbcType=BIGINT}
+		</if>
+
+	    	<!-- 大于等于role_id -->
+		<if test="filter_roleIds != null">
+			AND role_id<![CDATA[>=]]>#{filter_roleIds}
+		</if>
+		<!-- 小于等于role_id -->
+	    <if test="filter_roleIde!= null">
+			AND role_id<![CDATA[<=]]>#{filter_roleIde}
+		</if>
+
+
+		<if test="avatar != null ">
+			AND avatar = #{avatar,jdbcType=VARCHAR}
+		</if>
+	   <if test="avatarlike != null ">
+			AND avatar like CONCAT('%',#{avatarlike},'%')
+		</if>
+
+
+
+		<if test="updateDate != null ">
+			AND update_date = #{updateDate,jdbcType=TIMESTAMP}
+		</if>
+	    	<!-- 大于等于update_date -->
+		<if test="filter_updateDates != null">
+			AND date_format(update_date,'%Y%m%d')<![CDATA[>=]]>#{filter_updateDates}
+		</if>
+		<!-- 小于等于update_date -->
+	    <if test="filter_updateDatee!= null">
+			AND date_format(update_date,'%Y%m%d')<![CDATA[<=]]>#{filter_updateDatee}
+		</if>
+
+
+
+		<if test="theme != null ">
+			AND theme = #{theme,jdbcType=INTEGER}
+		</if>
+
+	    	<!-- 大于等于theme -->
+		<if test="filter_themes != null">
+			AND theme<![CDATA[>=]]>#{filter_themes}
+		</if>
+		<!-- 小于等于theme -->
+	    <if test="filter_themee!= null">
+			AND theme<![CDATA[<=]]>#{filter_themee}
+		</if>
+
+	</sql>
+	
+	<sql id="set_column">
+		<if test="id != null ">
+			id = #{id,jdbcType=BIGINT},
+		</if>
+		<if test="createDate != null ">
+			create_date = #{createDate,jdbcType=TIMESTAMP},
+		</if>
+		<if test="userName != null ">
+			user_name = #{userName,jdbcType=VARCHAR},
+		</if>
+		<if test="password != null ">
+			password = #{password,jdbcType=VARCHAR},
+		</if>
+		<if test="nickname != null ">
+			nickname = #{nickname,jdbcType=VARCHAR},
+		</if>
+		<if test="isEnabled != null ">
+			is_enabled = #{isEnabled,jdbcType=INTEGER},
+		</if>
+		<if test="isLocked != null ">
+			is_locked = #{isLocked,jdbcType=INTEGER},
+		</if>
+		<if test="loginFailureCount != null ">
+			login_failure_count = #{loginFailureCount,jdbcType=INTEGER},
+		</if>
+		<if test="lockedDate != null ">
+			locked_date = #{lockedDate,jdbcType=TIMESTAMP},
+		</if>
+		<if test="loginDate != null ">
+			login_date = #{loginDate,jdbcType=TIMESTAMP},
+		</if>
+		<if test="loginIp != null ">
+			login_ip = #{loginIp,jdbcType=VARCHAR},
+		</if>
+		<if test="email != null ">
+			email = #{email,jdbcType=VARCHAR},
+		</if>
+		<if test="roleId != null ">
+			role_id = #{roleId,jdbcType=BIGINT},
+		</if>
+		<if test="avatar != null ">
+			avatar = #{avatar,jdbcType=VARCHAR},
+		</if>
+		<if test="updateDate != null ">
+			update_date = #{updateDate,jdbcType=TIMESTAMP},
+		</if>
+		<if test="theme != null ">
+			theme = #{theme,jdbcType=INTEGER},
+		</if>
+	</sql>
+	
+	
+	<select id="find" resultMap="UserResultMap">
+		SELECT	<include refid="base_column" />
+		FROM	t_system_user
+		WHERE	ID=#{id,jdbcType=BIGINT}
+	</select>
+	
+	
+	<select id="findAll" resultMap="UserResultMap">
+		SELECT	<include refid="base_column" />
+		FROM	t_system_user
+	</select>
+	
+	
+	<select id="findUserAndRole" resultMap="UserAndRoleResultMap">
+		SELECT	*
+		FROM	t_system_user u, T_SYSTEM_ROLE r
+		WHERE	u.ID=#{id,jdbcType=BIGINT} AND u.ROLE_ID = r.ID
+	</select>
+	
+	<insert id="insert" parameterType="com.framework.loippi.entity.User">
+		<selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">  
+	          SELECT LAST_INSERT_ID() AS ID    
+	    </selectKey>  
+		INSERT INTO t_system_user 
+				(<include refid="base_column" /> )
+		VALUES	(<include refid="base_value_column" />)
+	</insert>
+	
+	<update id="update" parameterType="com.framework.loippi.entity.User">
+		UPDATE	t_system_user
+		<set>
+			<include refid="set_column" />
+		</set>
+		WHERE	ID = #{id,jdbcType=BIGINT}
+	</update>
+	
+	<delete id="delete">
+		DELETE	FROM t_system_user
+		WHERE	ID = #{id,jdbcType=BIGINT}
+	</delete>
+	
+	<delete id="deleteAll">
+		DELETE	FROM t_system_user
+		WHERE	ID	IN
+    	<foreach item="userId" index="index" collection="ids" open="(" separator="," close=")">
+	  		#{userId} 
+		</foreach>
+	</delete>
+	
+	<select id="findByParams" resultMap="UserResultMap">
+		SELECT	<include refid="base_column" />
+		FROM 	t_system_user
+		<where>
+			<include refid="where_column" />		</where>
+			  <if test="order != null and order != ''">
+		order by  ${order}
+	     </if>
+	     
+		<if test="pageNumber != null  and pageSize !=null ">
+			limit  #{pageNumber,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+	     </if>
+
+	</select>
+	
+	<select id="findByPage" resultMap="UserResultMap"  parameterType="java.util.Map">
+		SELECT
+		<include refid="base_column" />
+		FROM t_system_user
+		<where>
+			<include refid="where_column" />
+		</where>
+	</select>
+	
+	<!-- 统计记录数 -->
+	<select id="count" resultType="long">
+		SELECT COUNT(*) FROM t_system_user
+		<where> 
+			<include refid="where_column" />
+		</where>
+	</select>
+	
+</mapper> 

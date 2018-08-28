@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.framework.loippi.dao.RoleDao">
+	
+	<resultMap id="RoleResultMap" type="com.framework.loippi.entity.Role">
+			<id property="id" column="id"  />
+		<result property="createDate" column="create_date" />
+		<result property="roleName" column="role_name" />
+		<result property="isSystem" column="is_system" />
+		<result property="descriptions" column="descriptions" />
+		<result property="updateDate" column="update_date" />
+		<result property="creator" column="creator" />
+		<result property="updator" column="updator" />
+	</resultMap>
+
+	<resultMap id="RoleAndAclResultMap" extends="RoleResultMap"  type="com.framework.loippi.entity.Role">
+	
+		<collection property="authorities" column="ID" select="com.framework.loippi.dao.AclDao.findByRoleId" ></collection>
+	</resultMap>
+
+	<!-- 定义可重用的SQL代码段，可以包含在其他语句中 -->
+	<sql id="base_column">
+		 id ,create_date ,role_name ,is_system ,descriptions ,update_date ,creator ,updator 
+	</sql>
+	
+	<sql id="base_value_column">
+		 #{id},#{createDate},#{roleName},#{isSystem},#{descriptions},#{updateDate},#{creator},#{updator}
+	</sql>
+	
+	<!-- 定义可重用的WHERE SQL公共代码段，可以包含在其他语句中 -->
+	<sql id="where_column">
+		<if test="id != null ">
+			AND id = #{id,jdbcType=BIGINT}
+		</if>
+
+	    	<!-- 大于等于id -->
+		<if test="filter_ids != null">
+			AND id<![CDATA[>=]]>#{filter_ids}
+		</if>
+		<!-- 小于等于id -->
+	    <if test="filter_ide!= null">
+			AND id<![CDATA[<=]]>#{filter_ide}
+		</if>
+
+
+		<if test="createDate != null ">
+			AND create_date = #{createDate,jdbcType=TIMESTAMP}
+		</if>
+	    	<!-- 大于等于create_date -->
+		<if test="filter_createDates != null">
+			AND date_format(create_date,'%Y%m%d')<![CDATA[>=]]>#{filter_createDates}
+		</if>
+		<!-- 小于等于create_date -->
+	    <if test="filter_createDatee!= null">
+			AND date_format(create_date,'%Y%m%d')<![CDATA[<=]]>#{filter_createDatee}
+		</if>
+
+
+
+		<if test="roleName != null ">
+			AND role_name = #{roleName,jdbcType=VARCHAR}
+		</if>
+	   <if test="roleNamelike != null ">
+			AND role_name like CONCAT('%',#{roleNamelike},'%')
+		</if>
+
+
+
+		<if test="isSystem != null ">
+			AND is_system = #{isSystem,jdbcType=INTEGER}
+		</if>
+
+	    	<!-- 大于等于is_system -->
+		<if test="filter_isSystems != null">
+			AND is_system<![CDATA[>=]]>#{filter_isSystems}
+		</if>
+		<!-- 小于等于is_system -->
+	    <if test="filter_isSysteme!= null">
+			AND is_system<![CDATA[<=]]>#{filter_isSysteme}
+		</if>
+
+
+		<if test="descriptions != null ">
+			AND descriptions = #{descriptions,jdbcType=VARCHAR}
+		</if>
+	   <if test="descriptionslike != null ">
+			AND descriptions like CONCAT('%',#{descriptionslike},'%')
+		</if>
+
+
+
+		<if test="updateDate != null ">
+			AND update_date = #{updateDate,jdbcType=TIMESTAMP}
+		</if>
+	    	<!-- 大于等于update_date -->
+		<if test="filter_updateDates != null">
+			AND date_format(update_date,'%Y%m%d')<![CDATA[>=]]>#{filter_updateDates}
+		</if>
+		<!-- 小于等于update_date -->
+	    <if test="filter_updateDatee!= null">
+			AND date_format(update_date,'%Y%m%d')<![CDATA[<=]]>#{filter_updateDatee}
+		</if>
+
+
+
+		<if test="creator != null ">
+			AND creator = #{creator,jdbcType=BIGINT}
+		</if>
+
+	    	<!-- 大于等于creator -->
+		<if test="filter_creators != null">
+			AND creator<![CDATA[>=]]>#{filter_creators}
+		</if>
+		<!-- 小于等于creator -->
+	    <if test="filter_creatore!= null">
+			AND creator<![CDATA[<=]]>#{filter_creatore}
+		</if>
+
+
+		<if test="updator != null ">
+			AND updator = #{updator,jdbcType=BIGINT}
+		</if>
+
+	    	<!-- 大于等于updator -->
+		<if test="filter_updators != null">
+			AND updator<![CDATA[>=]]>#{filter_updators}
+		</if>
+		<!-- 小于等于updator -->
+	    <if test="filter_updatore!= null">
+			AND updator<![CDATA[<=]]>#{filter_updatore}
+		</if>
+
+	</sql>
+	
+	<sql id="set_column">
+		<if test="id != null ">
+			id = #{id,jdbcType=BIGINT},
+		</if>
+		<if test="createDate != null ">
+			create_date = #{createDate,jdbcType=TIMESTAMP},
+		</if>
+		<if test="roleName != null ">
+			role_name = #{roleName,jdbcType=VARCHAR},
+		</if>
+		<if test="isSystem != null ">
+			is_system = #{isSystem,jdbcType=INTEGER},
+		</if>
+		<if test="descriptions != null ">
+			descriptions = #{descriptions,jdbcType=VARCHAR},
+		</if>
+		<if test="updateDate != null ">
+			update_date = #{updateDate,jdbcType=TIMESTAMP},
+		</if>
+		<if test="creator != null ">
+			creator = #{creator,jdbcType=BIGINT},
+		</if>
+		<if test="updator != null ">
+			updator = #{updator,jdbcType=BIGINT},
+		</if>
+	</sql>
+	
+	<select id="findRoleAndAcls" resultMap="RoleAndAclResultMap">
+		SELECT	<include refid="base_column" />
+		FROM	t_system_role
+		WHERE	ID=#{id,jdbcType=BIGINT}
+	</select>
+	
+	<select id="find" resultMap="RoleResultMap">
+		SELECT	<include refid="base_column" />
+		FROM	t_system_role
+		WHERE	ID=#{id,jdbcType=BIGINT}
+	</select>
+	
+	
+	<select id="findAll" resultMap="RoleResultMap">
+		SELECT	<include refid="base_column" />
+		FROM	t_system_role
+	</select>
+	
+	<insert id="insert" parameterType="com.framework.loippi.entity.Role">
+		<selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">  
+	          SELECT LAST_INSERT_ID() AS ID    
+	    </selectKey>  
+		INSERT INTO t_system_role 
+				(<include refid="base_column" /> )
+		VALUES	(<include refid="base_value_column" />)
+	</insert>
+	
+	<update id="update" parameterType="com.framework.loippi.entity.Role">
+		UPDATE	t_system_role
+		<set>
+			<include refid="set_column" />
+		</set>
+		WHERE	ID = #{id,jdbcType=BIGINT}
+	</update>
+	
+	<delete id="delete">
+		DELETE	FROM t_system_role
+		WHERE	ID = #{id,jdbcType=BIGINT}
+	</delete>
+	
+	<delete id="deleteAll">
+		DELETE	FROM t_system_role
+		WHERE	ID	IN
+    	<foreach item="RoleId" index="index" collection="ids" open="(" separator="," close=")">
+	  		#{RoleId} 
+		</foreach>
+	</delete>
+	
+	<select id="findByParams" resultMap="RoleResultMap">
+		SELECT	<include refid="base_column" />
+		FROM 	t_system_role
+		<where>
+			<include refid="where_column" />		</where>
+			  <if test="order != null and order != ''">
+		order by  ${order}
+	     </if>
+	     
+		<if test="pageNumber != null  and pageSize !=null ">
+			limit  #{pageNumber,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+	     </if>
+	
+	</select>
+	
+	<select id="findByPage" resultMap="RoleResultMap">
+		SELECT
+		<include refid="base_column" />
+		FROM t_system_role
+		<where>
+			<include refid="where_column" />
+		</where>
+	</select>
+			<!-- 统计记录数 -->
+	<select id="count" resultType="long">
+		SELECT COUNT(*) FROM t_system_role
+		<where> 
+			<include refid="where_column" />
+		</where>
+	</select>
+</mapper> 
